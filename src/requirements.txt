@@ -1,0 +1,13 @@
+# Python dependencies for the LLM-based smart building orchestration system
+
+# IFC file parsing
+ifcopenshell>=0.7.0
+
+# Neo4j graph database driver
+neo4j>=5.0.0
+
+# HTTP requests for Ollama API
+requests>=2.31.0
+
+# InfluxDB time-series database client
+influxdb-client>=1.38.0

@@ -1,0 +1,255 @@
+# 🏗️ Project Umarell
+
+> *A grumpy Milanese building inspector monitoring your smart building with AI*
+
+**L'Umarell** is an intelligent building management chat interface where the AI embodies a retired Milanese inspector - critical, knowledgeable, and full of personality.
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Configure environment
+cp config/.env.example .env
+nano .env  # Add your InfluxDB credentials
+
+# 2. Deploy (auto-setup on first launch)
+docker compose up -d
+
+# 3. Check status
+./scripts/check_status.sh
+```
+
+**First launch:** Models download automatically (10-20 min)  
+**Subsequent launches:** Instant! ⚡
+
+📖 **[Full Documentation](docs/README.md)** | 📋 **[Quick Reference](docs/QUICKREF.md)** | 🚀 **[Deployment Guide](docs/DEPLOYMENT.md)**
+
+---
+
+## 📁 Project Structure
+
+```
+umarell/
+├── 📄 docker-compose.yml       # Infrastructure definition
+├── 🐳 .env                     # Your credentials (create from .env.example)
+│
+├── 📖 docs/                    # Documentation
+│   ├── README.md              # Detailed documentation
+│   ├── QUICKREF.md            # Quick reference card
+│   ├── DEPLOYMENT.md          # Deployment checklist
+│   ├── AUTOMATIC_SETUP.md     # How auto-setup works
+│   └── SUMMARY.md             # Task completion summary
+│
+├── 🔧 scripts/                 # Automation scripts
+│   ├── check_status.sh        # Check system status ⭐
+│   ├── quickstart.sh          # Quick deployment helper
+│   ├── setup_umarell.sh       # Manual setup (legacy)
+│   ├── entrypoint.sh          # Docker entrypoint
+│   └── init_ollama.sh         # Model initialization
+│
+├── ⚙️  config/                  # Configuration files
+│   ├── .env.example           # Environment template
+│   ├── sensor_config.json     # Room-to-sensor mapping
+│   └── modelfiles/
+│       └── Modelfile_Umarell  # L'Umarell persona
+│
+└── 🐍 src/                     # Source code
+    ├── umarell_tool.py        # Open WebUI tool (install in UI)
+    ├── ifc_to_graph.py        # IFC to Neo4j importer
+    ├── llm_router_tool.py     # Alternative tool implementation
+    └── requirements.txt       # Python dependencies
+```
+
+---
+
+## 🎯 What It Does
+
+### The Persona: L'Umarell 👴
+
+In Milanese culture, an "Umarell" is a retired person who watches construction sites and criticizes the work. Our AI embodies this:
+
+- 🗣️ **Speaks English** with Milanese mannerisms
+- 🔥 **Complains** about temperatures > 21°C (wasting money!)
+- ❄️ **Complains** about temperatures < 19°C (too cold!)
+- 💬 **Uses Milanese slang**: "Ué", "Taaac", "Barlafus", "Va che l'è brutta"
+- 🧠 **Knowledgeable** about building systems and efficiency
+
+### The Architecture
+
+```
+┌─────────────┐
+│ Open WebUI  │ ← Chat Interface (http://localhost:8080)
+└──────┬──────┘
+       │
+   ┌───┴────┐
+   │        │
+   ▼        ▼
+┌─────┐  ┌──────────┐
+│Ollama│  │ Umarell  │
+│Models│  │ Tool     │
+└──┬───┘  └────┬─────┘
+   │           │
+   └────┬──────┘
+        │
+   ┌────┴─────┐
+   │          │
+   ▼          ▼
+┌──────┐  ┌─────────┐
+│Neo4j │  │InfluxDB │
+└──────┘  └─────────┘
+```
+
+**Components:**
+- **Ollama**: Runs AI models (qwen2.5:7b + qwen2.5-coder:1.5b)
+- **Neo4j**: Graph database storing building structure (IFC data)
+- **Open WebUI**: Chat interface where L'Umarell lives
+- **InfluxDB**: Time-series database for sensor data (external)
+- **Umarell Tool**: Python tool that queries databases using AI-generated queries
+
+---
+
+## 💬 Example Conversation
+
+**You:** "What's the temperature in Room 101?"
+
+**L'Umarell:** 
+> "Ué! Let me check... *grumbles*"
+>
+> *[Tool queries Neo4j → finds room → queries InfluxDB → gets 24.5°C]*
+>
+> "Madòna! Room 101 is at 24.5 degrees! Ma sèm matt? (Are we crazy?) We're burning money to heat the whole neighborhood! Turn it down, barlafus! This is sprechi (waste)!"
+
+---
+
+## 🛠️ Essential Commands
+
+### Check Status
+```bash
+./scripts/check_status.sh
+```
+
+### View Logs
+```bash
+docker compose logs -f              # All services
+docker compose logs -f ollama       # Just Ollama
+```
+
+### Restart Services
+```bash
+docker compose restart
+```
+
+### Stop Everything
+```bash
+docker compose down
+```
+
+---
+
+## 📊 Requirements
+
+- **VPS**: 16GB RAM recommended
+- **Disk**: ~10GB free space
+- **Docker**: Docker Engine + Docker Compose
+- **InfluxDB**: External instance with sensor data
+- **Ports**: 8080 (Open WebUI), 7474/7687 (Neo4j), 11434 (Ollama)
+
+---
+
+## 🔧 Configuration
+
+### 1. InfluxDB Credentials
+
+Edit `.env` (copy from `config/.env.example`):
+
+```env
+INFLUX_HOST=http://your-influxdb:8086
+INFLUX_TOKEN=your-token-here
+INFLUX_ORG=your-org
+INFLUX_BUCKET=your-bucket
+```
+
+### 2. Room-to-Sensor Mapping
+
+Edit `config/sensor_config.json`:
+
+```json
+{
+  "room_to_sensor_map": {
+    "ifc_id_122131": "sensor_001_temp",
+    "ifc_id_122132": "sensor_002_hvac"
+  }
+}
+```
+
+### 3. Install Open WebUI Tool
+
+1. Access http://localhost:8080
+2. Go to **Settings** → **Tools** → **+ Add Tool**
+3. Copy content of `src/umarell_tool.py`
+4. Paste, save, and enable
+
+---
+
+## 🎓 Documentation
+
+- **[README.md](docs/README.md)** - Complete documentation
+- **[QUICKREF.md](docs/QUICKREF.md)** - One-page reference
+- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Deployment checklist
+- **[AUTOMATIC_SETUP.md](docs/AUTOMATIC_SETUP.md)** - How auto-setup works
+
+---
+
+## 🚨 Troubleshooting
+
+### Models Not Found?
+```bash
+./scripts/check_status.sh
+docker compose logs ollama
+```
+
+### Setup Taking Long?
+First launch downloads ~5.5GB of models. Check progress:
+```bash
+docker compose logs -f ollama
+```
+
+### Tool Not Working?
+- Verify `.env` has correct InfluxDB credentials
+- Check `config/sensor_config.json` is properly configured
+- View logs: `docker compose logs open-webui`
+
+---
+
+## 📝 License
+
+Educational and demonstration purposes.
+
+---
+
+## 🙏 Credits
+
+- **Open WebUI**: https://github.com/open-webui/open-webui
+- **Ollama**: https://ollama.ai
+- **Qwen Models**: Alibaba Cloud
+- **Neo4j**: https://neo4j.com
+- **Inspiration**: The real Umarells of Milano 👴
+
+---
+
+**L'Umarell says:**
+
+> "Va bene! Now you have a proper project structure. Not like before with files scattered everywhere like a barlafus! Taaac! 👴"
+
+---
+
+## 🚀 Ready to Deploy?
+
+```bash
+docker compose up -d
+```
+
+**That's it!** Auto-setup handles the rest.
+
+📖 Need help? Check **[docs/QUICKREF.md](docs/QUICKREF.md)**

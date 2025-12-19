@@ -1,0 +1,37 @@
+# Environment variables (contains secrets)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+venv/*
+env/
+ENV/
+
+# Docker volumes and data
+ollama_data/
+neo4j_data/
+
+# IFC files (potentially large)
+*.ifc
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+logo.png~

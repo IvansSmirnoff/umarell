@@ -1,0 +1,18 @@
+{
+  "room_to_sensor_map": {
+    "ifc_id_122131": "sensor_001_temp",
+    "ifc_id_122132": "sensor_002_hvac"
+  },
+  "sensor_metadata": {
+    "sensor_001_temp": {
+      "type": "temperature",
+      "unit": "celsius",
+      "location": "Room 101"
+    },
+    "sensor_002_hvac": {
+      "type": "hvac_status",
+      "unit": "boolean",
+      "location": "Room 102"
+    }
+  }
+}

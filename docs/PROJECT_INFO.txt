@@ -1,0 +1,117 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                    PROJECT UMARELL v2.0.0                            ║
+║           The Grumpy Milanese Building Inspector (AI)                ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📁 CLEAN PROJECT STRUCTURE (20+ files → 4 directories)
+
+Root Directory (Clean!)
+├── README.md              ← Start here
+├── CHANGELOG.md           ← Version history
+├── docker-compose.yml     ← Infrastructure
+├── .env                   ← Your secrets (git-ignored)
+└── .env.example          ← Symlink to config/.env.example
+
+├─ 📖 docs/               (All Documentation)
+│  ├── README.md          ← Detailed guide
+│  ├── QUICKREF.md        ← One-page cheat sheet ⭐
+│  ├── DEPLOYMENT.md      ← Step-by-step deployment
+│  ├── AUTOMATIC_SETUP.md ← How auto-setup works
+│  ├── STRUCTURE.md       ← Project organization
+│  └── SUMMARY.md         ← Task completion summary
+
+├─ 🔧 scripts/            (All Automation)
+│  ├── check_status.sh    ← Status checker ⭐
+│  ├── quickstart.sh      ← Quick deploy
+│  ├── setup_umarell.sh   ← Manual setup (legacy)
+│  ├── entrypoint.sh      ← Docker entrypoint (auto-runs)
+│  └── init_ollama.sh     ← Model init (auto-runs)
+
+├─ ⚙️  config/             (All Configuration)
+│  ├── .env.example       ← Environment template
+│  ├── sensor_config.json ← Room-to-sensor mapping
+│  └── modelfiles/
+│     └── Modelfile_Umarell ← L'Umarell persona
+
+└─ 🐍 src/                (All Source Code)
+   ├── umarell_tool.py    ← Main Open WebUI tool
+   ├── ifc_to_graph.py    ← IFC importer
+   ├── llm_router_tool.py ← Alternative tool
+   └── requirements.txt   ← Python deps
+
+═══════════════════════════════════════════════════════════════════════
+
+🚀 QUICK START
+
+1. Configure:
+   cp config/.env.example .env
+   nano .env  # Add InfluxDB credentials
+
+2. Deploy:
+   docker compose up -d
+
+3. Check status:
+   ./scripts/check_status.sh
+
+First launch: Models auto-download (10-20 min)
+Next launches: Instant! ⚡
+
+═══════════════════════════════════════════════════════════════════════
+
+🎯 KEY IMPROVEMENTS (v2.0.0)
+
+✅ Professional directory structure
+✅ All docs in docs/
+✅ All scripts in scripts/
+✅ All config in config/
+✅ All code in src/
+✅ Clean root directory (only 5 files!)
+✅ Updated all path references
+✅ Added STRUCTURE.md
+✅ Added CHANGELOG.md
+
+═══════════════════════════════════════════════════════════════════════
+
+📊 ESSENTIAL COMMANDS
+
+Check status:        ./scripts/check_status.sh
+Quick deploy:        ./scripts/quickstart.sh
+View logs:           docker compose logs -f
+Restart:             docker compose restart
+Stop:                docker compose down
+
+═══════════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION GUIDE
+
+Quick reference:     docs/QUICKREF.md        ⭐ Start here!
+Full docs:           docs/README.md
+Deployment:          docs/DEPLOYMENT.md
+Auto-setup:          docs/AUTOMATIC_SETUP.md
+Structure:           docs/STRUCTURE.md
+Tasks completed:     docs/SUMMARY.md
+
+═══════════════════════════════════════════════════════════════════════
+
+🌐 SERVICE URLS
+
+Open WebUI:          http://localhost:8080
+Neo4j Browser:       http://localhost:7474
+Ollama API:          http://localhost:11434
+
+═══════════════════════════════════════════════════════════════════════
+
+�� WHAT'S DIFFERENT?
+
+BEFORE: 20+ files scattered in root directory (messy!)
+AFTER:  Organized into 4 directories (professional!)
+
+All functionality preserved - just better organized!
+
+═══════════════════════════════════════════════════════════════════════
+
+L'Umarell says: "Taaac! Now THIS is a proper project! Everything in
+its place, like a well-organized construction site. No more mess like
+before with files everywhere like a barlafus! Bravo! 👴"
+
+═══════════════════════════════════════════════════════════════════════

@@ -1,0 +1,67 @@
+networks:
+  smart-building-net:
+    driver: bridge
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    mem_limit: 12g
+    ports:
+      - "11434:11434"
+    networks:
+      - smart-building-net
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ./ollama_data:/root/.ollama
+      - ./config/modelfiles:/modelfiles
+      - ./scripts:/scripts
+    entrypoint: ["/bin/bash", "/scripts/entrypoint.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  neo4j:
+    image: neo4j:5.11
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_memory_heap_max__size=2G
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    networks:
+      - smart-building-net
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    ports:
+      - "8080:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+      - ./config/sensor_config.json:/app/backend/data/sensor_config.json:ro
+    environment:
+      - INFLUX_HOST=${INFLUX_HOST:-http://localhost:8086}
+      - INFLUX_TOKEN=${INFLUX_TOKEN:-placeholder}
+      - INFLUX_ORG=${INFLUX_ORG:-my-org}
+      - INFLUX_BUCKET=${INFLUX_BUCKET:-my-bucket}
+      - OLLAMA_BASE_URL=http://ollama:11434
+    networks:
+      - smart-building-net
+    depends_on:
+      ollama:
+        condition: service_healthy
+      neo4j:
+        condition: service_started
+
+volumes:
+  neo4j_data:
+  open_webui_data:
