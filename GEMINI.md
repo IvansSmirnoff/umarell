@@ -7,14 +7,14 @@
 -   **Frontend**: Open WebUI (localhost:8080).
 -   **AI Backend**: Ollama running `qwen2.5:7b` and `qwen2.5-coder:1.5b`.
 -   **Databases**:
-    -   **Neo4j**: Stores building topology (Rooms, Zones, etc.) derived from IFC files.
+    -   **Neo4j**: Stores building topology (Rooms, Zones, etc.) derived from IFC files. Nodes include semantic properties (`storey`, `category_it`, `category_en`, `area`) and full IFC property set dumps.
     -   **InfluxDB**: Stores real-time sensor data.
 -   **Integration**: `src/umarell_tool.py` connects the AI to the databases.
 
 ## Key Directories
 -   **`src/`**: Python source code.
     -   `umarell_tool.py`: Main Open WebUI tool definition.
-    -   `ifc_to_graph.py`: Script to import IFC data into Neo4j.
+    -   `ifc_to_graph.py`: Script to import IFC data into Neo4j. Extracts semantics and handles IT/EN translation.
     -   `llm_router_tool.py`: Alternative implementation.
 -   **`config/`**: Configuration files.
     -   `modelfiles/Modelfile_Umarell`: Defines the "Umarell" system prompt and persona.

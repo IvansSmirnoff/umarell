@@ -1,7 +1,31 @@
 {
   "room_to_sensor_map": {
-    "ifc_id_122131": "sensor_001_temp",
-    "ifc_id_122132": "sensor_002_hvac"
+    "Ufficio 001": "MIA0206000001",
+    "Ufficio Dipartimentale 002a": "MIA0206000002a",
+    "Ufficio Dipartimentale 002b": "MIA0206000002b",
+    "Ufficio Dipartimentale 003a": "MIA0206000003a",
+    "Ufficio Dipartimentale 003b": "MIA0206000003b",
+    "Ufficio Dipartimentale 003c": "MIA0206000003c",
+    "Ufficio Dipartimentale 003d": "MIA0206000003d",
+    "Ufficio Dipartimentale 005a": "MIA0206000005a",
+    "Ufficio Dipartimentale 005b": "MIA0206000005b",
+    "Ufficio Dipartimentale 005c": "MIA0206000005c",
+    "Ufficio Dipartimentale 006": "MIA0206000006",
+    "Ufficio Dipartimentale 007": "MIA0206000007",
+    "Ufficio Dipartimentale 008": "MIA0206000008",
+    "Ufficio Dipartimentale 017a": "MIA0206000017a",
+    "Ufficio Dipartimentale 017b": "MIA0206000017b",
+    "Sala riunioni 019": "MIA0206000019",
+    "Ufficio Dipartimentale 021b": "MIA0206000021b",
+    "Ufficio Dipartimentale 024": "MIA0206000024",
+    "Ufficio Dipartimentale 025": "MIA0206000025",
+    "Ufficio Dipartimentale 026": "MIA0206000026",
+    "Ufficio Dipartimentale 027": "MIA0206000027",
+    "Locale 028": "MIA0206000028",
+    "Sala studio 040": "MIA0206000040",
+    "Sala studio 036": "MIA0206000041a",
+    "Sala studio 041": "MIA0206000041b",
+    "Ufficio Dipartimentale 012": "MIA0206001012"
   },
   "sensor_metadata": {
     "sensor_001_temp": {

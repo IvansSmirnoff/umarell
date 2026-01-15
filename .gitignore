@@ -35,3 +35,5 @@ neo4j_data/
 # Backup files
 *.bak
 logo.png~
+
+ifc/*.ifc

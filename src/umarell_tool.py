@@ -105,16 +105,20 @@ class Tools:
         # Ask LLM to generate Cypher query
         prompt = f"""Generate a Neo4j Cypher query to find a room by name.
         
-Room name: "{room_name}"
+Room name/description: "{room_name}"
 
 The database has Room nodes with properties:
 - room_key (the IFC ID we need)
-- name (the room name)
-- longname (alternative name)
+- name (the short room number, e.g. '001')
+- longname (descriptive name)
+- category_en (English category, e.g. 'Office', 'Meeting Room')
+- category_it (Italian category, e.g. 'Ufficio', 'Sala Riunioni')
+- storey (Floor ID, e.g. '002', '00S')
 
 Return ONLY the Cypher query, nothing else. The query should match case-insensitively and return the room_key.
+If searching by category, try to match either category_en or category_it.
 
-Example: MATCH (r:Room) WHERE toLower(r.name) CONTAINS toLower('Room 101') RETURN r.room_key LIMIT 1
+Example: MATCH (r:Room) WHERE toLower(r.name) CONTAINS toLower('Room 101') OR toLower(r.category_en) CONTAINS 'meeting' RETURN r.room_key LIMIT 1
 """
         
         cypher_query = self._ask_llm(prompt)
