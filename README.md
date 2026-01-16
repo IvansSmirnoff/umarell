@@ -55,9 +55,9 @@ umarell/
 │       └── Modelfile_Umarell  # L'Umarell persona
 │
 └── 🐍 src/                     # Source code
-    ├── umarell_tool.py        # Open WebUI tool (install in UI)
-    ├── ifc_to_graph.py        # IFC to Neo4j importer
-    ├── llm_router_tool.py     # Alternative tool implementation
+    ├── umarell_tool.py        # Open WebUI toolkit (3 methods)
+    ├── ifc_to_graph.py        # IFC to Neo4j importer (semantic extraction)
+    ├── llm_router_tool.py     # Legacy implementation (deprecated)
     └── requirements.txt       # Python dependencies
 ```
 
@@ -101,24 +101,41 @@ In Milanese culture, an "Umarell" is a retired person who watches construction s
 ```
 
 **Components:**
-- **Ollama**: Runs AI models (qwen2.5:7b + qwen2.5-coder:1.5b)
-- **Neo4j**: Graph database storing building structure (IFC data)
+- **Ollama**: Runs AI models (qwen2.5:7b for L'Umarell persona)
+- **Neo4j**: Graph database storing building structure (IFC data with semantic properties)
 - **Open WebUI**: Chat interface where L'Umarell lives
 - **InfluxDB**: Time-series database for sensor data (external)
-- **Umarell Tool**: Python tool that queries databases using AI-generated queries
+- **Umarell Toolkit**: Multi-purpose Python toolkit with 3 methods for deterministic database queries
 
 ---
 
-## 💬 Example Conversation
+## � Umarell Toolkit
 
-**You:** "What's the temperature in Room 101?"
+The toolkit exposes **3 methods** to the LLM for robust, deterministic queries:
+
+| Method | Purpose | Example Question |
+|--------|---------|------------------|
+| `query_topology()` | Find building elements | "How many windows on floor 2?" |
+| `check_sensor_config()` | Check sensor setup | "Is there a temp sensor in Room 001?" |
+| `inspect_zone_metrics()` | Analyze sensor data | "Where is the air quality worst?" |
+
+---
+
+## 💬 Example Conversations
+
+**You:** "How many meeting rooms are on the second floor?"
 
 **L'Umarell:** 
-> "Ué! Let me check... *grumbles*"
+> *[Uses `query_topology(category="meeting", floor="2")`]*
 >
-> *[Tool queries Neo4j → finds room → queries InfluxDB → gets 24.5°C]*
+> "Ué! I found 3 meeting rooms on floor 2. Not bad, but I bet they're always empty while people waste time at their desks!"
+
+**You:** "Which room has the worst air quality?"
+
+**L'Umarell:** 
+> *[Uses `inspect_zone_metrics(zone="whole building", type="co2", goal="max")`]*
 >
-> "Madòna! Room 101 is at 24.5 degrees! Ma sèm matt? (Are we crazy?) We're burning money to heat the whole neighborhood! Turn it down, barlafus! This is sprechi (waste)!"
+> "Madòna! Room 205 has CO2 at 1850 ppm! People are breathing like fish in there! Open a window, barlafus!"
 
 ---
 
@@ -177,13 +194,28 @@ Edit `config/sensor_config.json`:
 ```json
 {
   "room_to_sensor_map": {
-    "ifc_id_122131": "sensor_001_temp",
-    "ifc_id_122132": "sensor_002_hvac"
+    "ifc_room_001": {
+      "temperature": "sensor_001_temp",
+      "co2": "sensor_001_co2"
+    },
+    "ifc_room_002": "sensor_002_temp"
+  },
+  "sensor_types": {
+    "temperature": { "unit": "°C" },
+    "co2": { "unit": "ppm" }
   }
 }
 ```
 
-### 3. Install Open WebUI Tool
+### 3. Import IFC Data
+
+```bash
+python src/ifc_to_graph.py --ifc ifc/your_building.ifc --config config/sensor_config.json
+```
+
+Extracts IfcSpace entities with semantic properties (storey, category_it/en, area) into Neo4j.
+
+### 4. Install Open WebUI Tool
 
 1. Access http://localhost:8080
 2. Go to **Settings** → **Tools** → **+ Add Tool**

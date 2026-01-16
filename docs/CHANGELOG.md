@@ -4,6 +4,43 @@ All notable changes to Project Umarell.
 
 ---
 
+## [3.0.0] - 2026-01-15 - Robust Multi-Purpose Toolkit
+
+### 🎯 Major Architecture Overhaul
+
+#### Added
+- **3-method toolkit architecture** in `umarell_tool.py`:
+  - `query_topology(category, floor, name_contains)` - Find building elements
+  - `check_sensor_config(room_name)` - Check sensor configuration for a room
+  - `inspect_zone_metrics(zone, type, goal, time_range)` - Analyze sensor data across zones
+- **Deterministic query building** - All Cypher/Flux queries built in Python with sanitized inputs
+- **Input sanitization** - Prevents injection attacks in both Cypher and Flux queries
+- **Graceful library handling** - Missing `neo4j` or `influxdb_client` handled with helpful errors
+- **Multi-path config loading** - Searches multiple paths for `sensor_config.json` with caching
+- **Flexible sensor config formats** - Supports dict, string, or list mappings
+- **Batch InfluxDB queries** - Uses regex filters to fetch all sensor data in single query
+- **Multiple analysis modes** - `report`, `max`, `min`, `avg` for zone metrics
+
+#### Changed
+- **Removed LLM query generation** - No more `_ask_llm()` for writing raw SQL/Flux
+- **Removed dual-LLM architecture** - No longer needs `qwen2.5-coder:1.5b`
+- **Updated `ifc_to_graph.py`** - Enhanced semantic extraction from IFC_Locali property sets
+- **Updated documentation** - GEMINI.md, README.md reflect new toolkit architecture
+
+#### Removed
+- `_ask_llm()` method - Replaced with deterministic query building
+- `inspect_building()` method - Replaced with 3 specialized methods
+- Dependency on `qwen2.5-coder:1.5b` model
+
+#### Why This Matters
+The old tool was fragile because it relied on an LLM to write raw database queries at runtime. The new toolkit:
+- **More reliable** - Deterministic queries never have syntax errors
+- **More secure** - Input sanitization prevents injection
+- **More capable** - 3 specialized methods handle different use cases
+- **Simpler** - Only needs one LLM model (qwen2.5:7b)
+
+---
+
 ## [2.0.0] - 2025-11-20 - Project Reorganization
 
 ### 🎯 Major Structural Improvements
@@ -101,6 +138,7 @@ After:  Clean root with organized subdirectories
 
 ## Version History
 
+- **v3.0.0** - Robust multi-purpose toolkit (deterministic queries)
 - **v2.0.0** - Professional project structure
 - **v1.0.0** - Automatic setup system
 - **v0.1.0** - Initial working implementation
@@ -108,6 +146,41 @@ After:  Clean root with organized subdirectories
 ---
 
 ## Upgrade Guide
+
+### From v2.0.0 to v3.0.0
+
+**Breaking change**: The tool API has changed completely.
+
+1. **Pull latest changes:**
+   ```bash
+   git pull
+   ```
+
+2. **Update sensor_config.json** (optional - new format supported):
+   ```json
+   {
+     "room_to_sensor_map": {
+       "room_id": {
+         "temperature": "sensor_temp_001",
+         "co2": "sensor_co2_001"
+       }
+     },
+     "sensor_types": {
+       "temperature": { "unit": "°C" },
+       "co2": { "unit": "ppm" }
+     }
+   }
+   ```
+
+3. **Re-install the tool in Open WebUI:**
+   - Go to Settings → Tools
+   - Delete old Umarell tool
+   - Add new tool from `src/umarell_tool.py`
+
+4. **Remove qwen2.5-coder model** (no longer needed):
+   ```bash
+   docker exec ollama ollama rm qwen2.5-coder:1.5b
+   ```
 
 ### From v1.0.0 to v2.0.0
 
@@ -143,6 +216,11 @@ Everything should work exactly as before, just better organized!
 
 ## Breaking Changes
 
+### v3.0.0
+- **Tool API completely changed** - Old `inspect_building()` replaced with 3 new methods
+- **Must re-install tool** in Open WebUI
+- **qwen2.5-coder:1.5b no longer used** - Can be removed to save space
+
 ### v2.0.0
 - **File paths changed** - All paths updated in code
 - **docker-compose.yml volumes** - Now point to new locations
@@ -155,6 +233,7 @@ Everything should work exactly as before, just better organized!
 
 ## Future Plans
 
+- [x] ~~Robust deterministic query building~~ (v3.0.0)
 - [ ] Web UI for sensor config management
 - [ ] Advanced HVAC control integration
 - [ ] Multi-language support (keep Milanese attitude!)
